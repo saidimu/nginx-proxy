@@ -20,6 +20,17 @@ To proxy a websockets container, add an env var WEBSOCKETS=1
 
     $ docker run -e VIRTUAL_HOST=foo.bar.com -e WEBSOCKETS=1  ...
 
+
+### Setting the maximum upload size for a virtual host.
+
+Some virtual hosts may require upload sizes that are larger than the default nginx [client_max_body_size](http://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size) of 1 MB.
+
+To achieve that, set the `MAX_UPLOAD_SIZE` variable on at least one of the containers that serve the `VIRTUAL_HOST`:
+
+    $ docker run -e VIRTUAL_HOST=foo.bar.com -e MAX_UPLOAD_SIZE=512m ...
+
+Please note that if a virtual host is served by multiple containers with conflicting values of `MAX_UPLOAD_SIZE` then only the first value will be used.
+
 ### Multiple Ports
 
 If your container exposes multiple ports, nginx-proxy will default to the service running on port 80.  If you need to specify a different port, you can set a VIRTUAL_PORT env var to select a different one.  If your container only exposes one port and it has a VIRTUAL_HOST env var set, that port will be selected.

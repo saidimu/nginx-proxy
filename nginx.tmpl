@@ -64,6 +64,14 @@ server {
 	                proxy_set_header Connection "";
                 {{ end }}
                 
+		{{/* Get the first client max body size defined by containers w/ the same vhost */}}
+		{{ $clientMaxBodySize := (first (groupByKeys $containers "Env.MAX_UPLOAD_SIZE")) }}
+		
+		{{/* Set the Nginx client_max_body_size option from environment variables */}}
+		{{ if $clientMaxBodySize }}
+			client_max_body_size {{ $clientMaxBodySize }};
+		{{ end }}
+
 	}
 {{ end }}
 }
